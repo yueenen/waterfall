@@ -4,8 +4,108 @@
 <head>
     <meta charset="UTF-8">
     <title> 你不会的原因是想的太多，写得太少。</title>
-    <script></script>
+    <style>
+        body, div, img, p {
+            padding: 0;
+            margin: 0;
+        }
+
+        body {
+            background-color: #F7F7F7;
+            font-family: "Microsoft Sans Serif";
+        }
+
+        .wrap {
+            padding: 50px;
+        }
+
+        .items {
+            position: relative;
+        }
+
+        .item {
+            width: 228px;
+            position: absolute;
+        }
+
+        img {
+            display: block;
+            width: 100%;
+        }
+
+        .wrap > p {
+            width: 100%;
+            height: 40px;
+            line-height: 40px;
+            background-color: #deff95;
+            text-align: center;
+        }
+
+    </style>
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/template-native.js"></script>
+    <script src="waterfall.js"></script>
 </head>
 <body>
+    <div class="wrap">
+        <div class="items">
+
+        </div>
+        <p class="tips">000</p>
+    </div>
+
+    <script type="text/template" id="fall">
+        <% for(var i = 0; i < items.length; i++){%>
+        <div class="item">
+            <img src="<%= items[i].path%>" alt="">
+            <p><%= items[i].text%></p>
+        </div>
+        <% } %>
+    </script>
+   <!--
+
+   -->
+    <script>
+        $(function () {
+            function getData(currentPage) {
+                $.ajax({
+                    type: "get",
+                    url: "waterfall.php",
+                    data: {"page": currentPage},
+                    beforeSend: function () {
+                        $(".tips").text("正在加载更多数据").addClass("loading");
+                    },
+                    success: function (data) {
+                        if (data.items.length == 0) {
+                            $(".tips").text("数据全部加载完毕");
+                            return false;
+                        }
+                        var html = template("fall", data);
+                        $(".items").append(html);
+                        $(".items").waterfall();
+                        $(".tips").attr("page", data.page).text("aaa").removeClass("loading");
+                    }
+                })
+            }
+
+            getData(1);
+
+            $(window).on("resize", function () {
+                $(".items").waterFall();
+            });
+
+            $(window).on("scroll", function () {
+                var itemOffsetTop = $(".items").offset().top;
+                var itemsHeight = $(".items").height();
+                var windowOffsetTop = $(window).scrollTop();
+                var windowHeight = $(window).height();
+                if (itemOffsetTop + itemsHeight - windowOffsetTop - windowHeight < 100 && !$(".tips").hasClass("loading")) {
+                    var page = $(".tips").attr("page");
+                    getData(page);
+                }
+            })
+        })
+    </script>
 </body>
 </html>
