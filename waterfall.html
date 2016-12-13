@@ -33,7 +33,7 @@
             width: 100%;
         }
 
-        .wrap > p {
+        .wrapper > p {
             width: 100%;
             height: 40px;
             line-height: 40px;
@@ -48,25 +48,28 @@
     <script src="waterfall.js"></script>
 </head>
 <body>
-    <div class="wrap">
-        <div class="items">
+    <div class="wrapper">
+    <div class="items">
 
-        </div>
-        <p class="tips">000</p>
     </div>
-
-    <script type="text/template" id="fall">
-        <% for(var i = 0; i < items.length; i++){%>
+    <p class="tips">点击加载更多数据</p>
+</div>
+    <script type="temp/template" id="fall">
+        <% for(var i=0; i< items.length; i++){ %>
         <div class="item">
             <img src="<%= items[i].path%>" alt="">
             <p><%= items[i].text%></p>
         </div>
-        <% } %>
+        <% }%>
     </script>
-   <!--
-
-   -->
     <script>
+        /**
+         * 瀑布流总体思路
+         * 1. 准备数据(data.json)
+         * 2. 准备显示页面(waterfall.html)
+         * 3. 准备PHP文件,用来接收数据,并且传递数据到显示页面中去(waterfall.php)
+         * 4. 准备代码逻辑文件(waterfall.js)
+         */
         $(function () {
             function getData(currentPage) {
                 $.ajax({
@@ -92,7 +95,7 @@
             getData(1);
 
             $(window).on("resize", function () {
-                $(".items").waterFall();
+                $(".items").waterfall();
             });
 
             $(window).on("scroll", function () {
